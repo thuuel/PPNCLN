@@ -329,24 +329,18 @@ def check_accuracy(X, y):
     return percentageCorrect
 
 
+# In[37]:
+
+
+X_train_col_ordered
+
+
 # Đánh giá mô hình phân cụm dựa trên tỷ lệ giữa số dòng dự báo đúng và tổng số dòng của 2 tập X_train và X_test
 
 # In[30]:
 
 
 check_accuracy(X_train_col_ordered, y_train_col_ordered)
-
-
-# In[31]:
-
-
-X_train_col_ordered.head()
-
-
-# In[32]:
-
-
-y_train_col_ordered.head()
 
 
 # In[33]:
