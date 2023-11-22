@@ -67,7 +67,7 @@ ax.set_ylabel("Number of occurrences", fontsize=14)
 for i in ax.patches:
     ax.text(i.get_x()+.18, i.get_height()+5, i.get_height(), fontsize=10)
 st.pyplot(ax)
---------------------------------------------------------
+
 # # Trong bộ dữ liệu đang sử dụng, có thể thấy ở cột PrecipitationSumInches có các giá trị T bên cạnh những số cụ thể.
 # # Điều này có thể hiểu là vào ngày hôm đó có mưa nhưng không biết cụ thể là bao nhiêu.
 
