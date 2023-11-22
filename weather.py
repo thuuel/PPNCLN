@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # coding: utf-8
-import sys
-sys.path.append(r"c:\users\admin\appdata\roaming\python\python38\site-packages")
 import streamlit as st
 import numpy as np
 import pandas as pd 
