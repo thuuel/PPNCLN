@@ -7,6 +7,9 @@ import warnings
 import matplotlib.pyplot as plt
 warnings.filterwarnings("ignore")
 
+st.title("Dự báo thời thiết sử dụng học máy không giám sát")
+st.header("Đồ án cuối kì môn **Phương pháp nghiên cứu liên ngành**")
+
 df=pd.read_csv("https://raw.githubusercontent.com/thuuel/PPNCLN/main/weather_data.csv")
 df.set_index('Date').sort_index()
 
@@ -14,8 +17,8 @@ columns_of_interest = ['TempAvgF','DewPointAvgF', 'HumidityAvgPercent', 'SeaLeve
 data = df[columns_of_interest]
 events = df[['Events']].replace(' ', 'None')
 
-# Xem qua thành phần của bộ dữ liệu chúng ta sẽ dùng để phân tích
-st.dataframe(data=data, width=None, height=None)
+st.markdown('Xem qua thành phần của bộ dữ liệu thô chúng ta sẽ dùng để áp dụng mô hình học máy')
+st.dataframe(data=data.head(), width=None, height=None)
 
 # Vẽ đồ thị thể hiện số lượng các sự kiện thời tiết đã xảy ra trong bộ dữ liệu
 fig, ax = plt.subplots(figsize=(10,5))
@@ -35,7 +38,7 @@ for event_type in unique_events:
     single_events = pd.concat([single_events, pd.DataFrame(data={event_type: event_occurred.values})], join='outer', axis=1)
 
 # Vẽ đồ thị thể hiện số lượng của từng sự kiện thời tiết riêng lẻ trong bộ dữ liệu
-fig, ax = plt.subplots(figsize=(8,5))
+fig, ax = plt.subplots(figsize=(8,4))
 single_events.sum().sort_values(ascending=False).plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
 ax.set_title("Weather events in dataset", fontsize=18)
 ax.set_ylabel("Number of occurrences", fontsize=14)
@@ -101,8 +104,10 @@ from sklearn import preprocessing
 data_values = data_prepared.values #returns a numpy array
 min_max_scaler = preprocessing.MinMaxScaler()
 data_prepared = pd.DataFrame(min_max_scaler.fit_transform(data_prepared), columns=data_prepared.columns, index=data_prepared.index)
-st.dataframe(data=data_prepared, width=None, height=None)
-st.dataframe(data=events_prepared, width=None, height=None)
+
+st.markdown('Sau khi được làm sạch, xử lý và chuẩn hóa, đây là bộ dữ liệu dùng để huấn luyện và kiểm thử')
+st.dataframe(data=data_prepared.head(), width=None, height=None)
+st.dataframe(data=events_prepared.head(), width=None, height=None)
 
 # Chia dữ liệu thành 2 tập riêng biệt để huấn luyện và kiểm thử
 from sklearn.model_selection import train_test_split
@@ -114,42 +119,47 @@ clusters_count = len(unique_events)
 
 # Sử dụng những thuật toán phân cụm và so sánh với kết quả thực tế. Từ đó, đưa ra thuật toán cho kết quả gần với thực tế nhất.
 
+st.markdown('Đây là mô hình phân cụm sử dụng **thuật toán K-Means**')
 from sklearn.cluster import KMeans
 warnings.filterwarnings("ignore")
 kmeans = KMeans(n_clusters=clusters_count).fit(X_train)
 resultDf1 = pd.DataFrame(kmeans.labels_)
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(8,4))
 resultDf1.iloc[:,0].value_counts().plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
 st.pyplot(fig)
 
+st.markdown('Đây là mô hình phân cụm sử dụng **thuật toán Spectral Clustering**')
 from sklearn.cluster import SpectralClustering
 warnings.filterwarnings("ignore")
 sc = SpectralClustering(n_clusters=clusters_count).fit(X_train)
 resultDf2 = pd.DataFrame(sc.labels_)
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(8,4))
 resultDf2.iloc[:,0].value_counts().plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
 st.pyplot(fig)
 
+st.markdown('Đây là mô hình phân cụm sử dụng **thuật toán DBSCAN**')
 from sklearn.cluster import DBSCAN
 dbscan = DBSCAN(eps=0.25, min_samples=4).fit(X_train)
 resultDf3 = pd.DataFrame(dbscan.labels_)
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(8,4))
 resultDf3.iloc[:,0].value_counts().plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
 st.pyplot(fig)
 
+st.markdown('Đây là mô hình phân cụm sử dụng **thuật toán Agglomerative Clustering**')
 from sklearn.cluster import AgglomerativeClustering
 ac = AgglomerativeClustering(n_clusters=clusters_count, linkage="average").fit(X_train)
 resultDf = pd.DataFrame(ac.labels_)
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(8,4))
 resultDf.iloc[:,0].value_counts().plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
 st.pyplot(fig)
 
-fig, ax = plt.subplots()
+st.markdown('Đây là đồ thị thể hiện số sự kiện đơn lẻ xảy ra trong thực tế')
+fig, ax = plt.subplots(figsize=(8,4))
 events_prepared.sum().sort_values(ascending=False).plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
 st.pyplot(fig)
 
-# Có thể thấy, thuật toán phân cụm Agglomerative đem lại kết quả phân cụm gần với thực tế nhất.
 
+st.markdown('Có thể thấy, thuật toán phân cụm Agglomerative đem lại kết quả phân cụm gần với thực tế nhất.')
 fig, ax = plt.subplots(1, 2, figsize=(15, 5))
 events_prepared.sum().sort_values(ascending=False).plot.bar(ax=ax[0], title="Real events that happened", color = plt.cm.Set2(range(len(events.Events.unique()))))
 resultDf.iloc[:,0].value_counts().plot.bar(ax=ax[1], title="Bar obtained from agglomerative clustering", color = plt.cm.Set2(range(len(events.Events.unique()))))
@@ -215,8 +225,6 @@ fig, ax = plt.subplots(1, 2, figsize=(15, 5))
 y_train_col_ordered.sum().plot.bar(ax=ax[0], title="Real events that happened", color = plt.cm.Set2(range(len(events.Events.unique()))))
 ax = X_train_col_ordered.sum().plot.bar(ax=ax[1], title="Predicted events", color = plt.cm.Set2(range(len(events.Events.unique()))))
 #resultDf.iloc[:,0].value_counts().plot.bar(ax=ax[1], title="Histogram obtained from agglomerative clustering")
-for i in ax.patches:
-    ax.text(i.get_x()+.18, i.get_height()+5, i.get_height(), fontsize=10)
 st.pyplot(fig)
 
 distancesDf = get_distances_from_cluster(X_test)
