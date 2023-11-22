@@ -7,7 +7,7 @@ import warnings
 import matplotlib.pyplot as plt
 warnings.filterwarnings("ignore")
 
-df=pd.read_csv(r"C:\Users\admin\OneDrive\Documents\weather_data.csv")
+df=pd.read_csv("https://raw.githubusercontent.com/thuuel/PPNCLN/main/weather_data.csv")
 df.set_index('Date').sort_index()
 
 columns_of_interest = ['TempAvgF','DewPointAvgF', 'HumidityAvgPercent', 'SeaLevelPressureAvgInches', 'VisibilityAvgMiles', 'WindAvgMPH', 'PrecipitationSumInches']
