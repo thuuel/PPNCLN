@@ -97,7 +97,7 @@ data_prepared = data_prepared.apply(pd.to_numeric)
 
 # Bắt đầu chuẩn hóa dữ liệu để huấn luyện mô hình
 
-from sklearn import preprocessing
+from scikit-learn import preprocessing
 data_values = data_prepared.values #returns a numpy array
 min_max_scaler = preprocessing.MinMaxScaler()
 data_prepared = pd.DataFrame(min_max_scaler.fit_transform(data_prepared), columns=data_prepared.columns, index=data_prepared.index)
@@ -105,7 +105,7 @@ st.dataframe(data=data_prepared, width=None, height=None)
 st.dataframe(data=events_prepared, width=None, height=None)
 
 # Chia dữ liệu thành 2 tập riêng biệt để huấn luyện và kiểm thử
-from sklearn.model_selection import train_test_split
+from scikit-learn.model_selection import train_test_split
 random_state = 42
 X_train, X_test = train_test_split(data_prepared, test_size=0.2, random_state=random_state)
 y_train, y_test = train_test_split(events_prepared, test_size=0.2, random_state=random_state)
@@ -114,7 +114,7 @@ clusters_count = len(unique_events)
 
 # Sử dụng những thuật toán phân cụm và so sánh với kết quả thực tế. Từ đó, đưa ra thuật toán cho kết quả gần với thực tế nhất.
 
-from sklearn.cluster import KMeans
+from scikit-learn.cluster import KMeans
 warnings.filterwarnings("ignore")
 kmeans = KMeans(n_clusters=clusters_count).fit(X_train)
 resultDf1 = pd.DataFrame(kmeans.labels_)
@@ -122,7 +122,7 @@ fig, ax = plt.subplots()
 resultDf1.iloc[:,0].value_counts().plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
 st.pyplot(fig)
 
-from sklearn.cluster import SpectralClustering
+from scikit-learn.cluster import SpectralClustering
 warnings.filterwarnings("ignore")
 sc = SpectralClustering(n_clusters=clusters_count).fit(X_train)
 resultDf2 = pd.DataFrame(sc.labels_)
@@ -130,14 +130,14 @@ fig, ax = plt.subplots()
 resultDf2.iloc[:,0].value_counts().plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
 st.pyplot(fig)
 
-from sklearn.cluster import DBSCAN
+from scikit-learn.cluster import DBSCAN
 dbscan = DBSCAN(eps=0.25, min_samples=4).fit(X_train)
 resultDf3 = pd.DataFrame(dbscan.labels_)
 fig, ax = plt.subplots()
 resultDf3.iloc[:,0].value_counts().plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
 st.pyplot(fig)
 
-from sklearn.cluster import AgglomerativeClustering
+from scikit-learn.cluster import AgglomerativeClustering
 ac = AgglomerativeClustering(n_clusters=clusters_count, linkage="average").fit(X_train)
 resultDf = pd.DataFrame(ac.labels_)
 fig, ax = plt.subplots()
