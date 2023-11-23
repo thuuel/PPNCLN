@@ -50,7 +50,6 @@ for i in ax.patches:
 
 # # Trong bộ dữ liệu đang sử dụng, có thể thấy ở cột PrecipitationSumInches có các giá trị T bên cạnh những số cụ thể.
 # # Điều này có thể hiểu là vào ngày hôm đó có mưa nhưng không biết cụ thể là bao nhiêu.
-
 precipitation = data[pd.to_numeric(data.PrecipitationSumInches, errors='coerce').isnull()].PrecipitationSumInches.value_counts()
 
 # # Kiểm tra xem bộ dữ liệu được sử dụng có bao nhiêu hàng không phải là số.
@@ -59,7 +58,6 @@ def isColumnNotNumeric(columns_of_interest, data):
     for column_name in columns_of_interest:
         result = result | pd.to_numeric(data[column_name], errors='coerce').isnull()
     return result
-
 def getDataFrameWithNonNumericRows(dataFrame):
     return data[isColumnNotNumeric(columns_of_interest, data)]
 
@@ -69,7 +67,6 @@ print("Non numeric rows: {0}".format(non_numeric_rows_count))
 
 # Chuyển đổi các dòng có T trong cột PrecipitationSumInches thành số 0.
 # Đồng thời, tạo một cột mới tên PrecipitationTrace để lưu trữ các giả trị T này (gán 1 cho những dòng có T, 0 cho những dòng còn lại)
-
 def numberOrZero(value):
     try:
         parsed = float(value)
@@ -84,7 +81,6 @@ data['PrecipitationSumInches'] = data['PrecipitationSumInches'].apply(numberOrZe
 
 # Từ các output trên, có thể thấy, ngoài cột T thì có nhiều cột khác chứa giá trị không phải số và đã được chuyển thành null.
 # Vì thế, phải cân nhắc xử lí để mô hình chạy hiệu quả.
-
 getDataFrameWithNonNumericRows(data)
 
 row_indices_for_missing_values = getDataFrameWithNonNumericRows(data).index.values
@@ -94,9 +90,7 @@ print("Data rows: {0}, Events rows: {1}".format(data_prepared.shape[0], events_p
 
 # Vì mô hình của học máy không giám sát nhóm sử dụng được chạy trên các dữ liệu dạng số.
 # Vì thế, phải kiểm tra xem loại dữ liệu của các cột và ép kiểu nếu cần.
-
 # data_prepared.dtypes
-
 data_prepared = data_prepared.apply(pd.to_numeric)
 # Bắt đầu chuẩn hóa dữ liệu để huấn luyện mô hình
 
@@ -247,3 +241,12 @@ st.pyplot(fig)
 a = check_accuracy(X_test_col_ordered, y_test_col_ordered)
 st.write(f'Chỉ số Accuracy của mô hình là {a}')
 
+with st.sidebar:
+    temp_text = st.text_input("Nhiệt độ trung bình ngày")
+    st.write('Nhiệt độ trung bình ngày', temp_text)
+    
+    dewpoint_text = st.text_input("Nhiệt độ điểm sương trung bình ngày")
+    st.write('Nhiệt độ điểm sương trung bình ngày', dewpoint_text)
+    
+    humidty = st.text_input("Độ ẩm trung bình ngày")
+    st.write('Độ ẩm trung bình ngày', humidty)
