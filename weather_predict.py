@@ -242,11 +242,17 @@ a = check_accuracy(X_test_col_ordered, y_test_col_ordered)
 st.write(f'Chỉ số Accuracy của mô hình là {a}')
 
 with st.sidebar:
-    temp_text = st.text_input("Nhiệt độ trung bình ngày")
-    st.write('Nhiệt độ trung bình ngày', temp_text)
+    st.subheader("Vui lòng nhập các thông số dưới đây!")
+    temp_text = st.text_input("Nhiệt độ trung bình (độ F)")
     
-    dewpoint_text = st.text_input("Nhiệt độ điểm sương trung bình ngày")
-    st.write('Nhiệt độ điểm sương trung bình ngày', dewpoint_text)
+    dewpoint_text = st.text_input("Nhiệt độ điểm sương trung bình (độ F)")
     
-    humidty = st.text_input("Độ ẩm trung bình ngày")
-    st.write('Độ ẩm trung bình ngày', humidty)
+    humidty_text = st.text_input("Độ ẩm trung bình (%)")
+
+    slp_text = st.text_input("Áp suất trung bình ở mực nước biển (inch)")
+
+    visibility_text = st.text_input("Tầm nhìn trung bình (m)")
+
+    windspeed_text = st.text_input("Tốc độ gió trung bình (m/h)")
+
+    precipi_text = st.text_input("Tổng lượng mưa (inch)")
