@@ -185,7 +185,7 @@ cluster_category_mapping = {}
 for i in range(clusters_count):
     # Chuyển đổi numpy.float64 thành float
     key = float(clusters_ordered[i])
-    value = float(event_names_ordered[i])
+    value = str(event_names_ordered[i])
     cluster_category_mapping.update({key: value})
 
     
