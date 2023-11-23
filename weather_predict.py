@@ -181,11 +181,6 @@ st.markdown("Từ kết quả phân cụm ở trên, cùng với các cơ sở l
 event_names_ordered = events_prepared.sum().sort_values(ascending=False).index
 clusters_ordered = resultDf.iloc[:,0].value_counts().index
 cluster_category_mapping = {}
-for i in range(clusters_count):
-    # Chuyển đổi numpy.float64 thành float
-    key = float(clusters_ordered[i])
-    value = str(event_names_ordered[i])
-    cluster_category_mapping.update({key: value})
 
 #tọa độ tâm từng cụm
 cluster_centers_mapping = {}
@@ -193,7 +188,14 @@ for key in cluster_category_mapping:
     # Chuyển đổi numpy.float64 thành float
     key_float = float(key)
     cluster_centers_mapping.update({key_float: cluster_centers_mapping[key]})
-
+    
+cluster_centers_mapping = {}
+for key in cluster_category_mapping:
+    cluster_indices = resultDf.loc[resultDf[0] == key].index
+    cluster_data = X_train.iloc[cluster_indices]
+    mean = cluster_data.mean(axis=0).values
+    cluster_centers_mapping.update({key:mean})
+    
 #tính khoảng cách từ 1 điểm đến tâm từng cụm
 def get_distances_from_cluster(data_frame):
     cluster_distance = np.zeros((data_frame.shape[0], clusters_count))
