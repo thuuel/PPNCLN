@@ -7,8 +7,9 @@ import warnings
 import matplotlib.pyplot as plt
 warnings.filterwarnings("ignore")
 
-st.title("Dự báo thời thiết")
+st.title("Dự báo thời thiết :fog: :snowman: :umbrella: :lightning:")
 st.markdown("Dự báo thời tiết sử dụng các thuật toán trong học máy không giám sát là đề tài đồ án cuối kỳ của môn học **Phương pháp nghiên cứu liên ngành**. Dưới đây là kết quả nghiên cứu và tìm hiểu của nhóm.")
+st.divider()
 st.subheader("Data collection")
 
 df=pd.read_csv("https://raw.githubusercontent.com/thuuel/PPNCLN/main/weather_data.csv")
@@ -104,6 +105,7 @@ data_values = data_prepared.values #returns a numpy array
 min_max_scaler = preprocessing.MinMaxScaler()
 data_prepared = pd.DataFrame(min_max_scaler.fit_transform(data_prepared), columns=data_prepared.columns, index=data_prepared.index)
 
+st.divider()
 st.subheader("Data Preparation")
 st.markdown('Sau khi được làm sạch, xử lý và chuẩn hóa, đây là bộ dữ liệu cuối cùng nhóm dùng để huấn luyện và kiểm thử')
 st.dataframe(data=data_prepared.head(), width=None, height=None)
@@ -118,7 +120,7 @@ y_train, y_test = train_test_split(events_prepared, test_size=0.2, random_state=
 clusters_count = len(unique_events)
 
 # Sử dụng những thuật toán phân cụm và so sánh với kết quả thực tế. Từ đó, đưa ra thuật toán cho kết quả gần với thực tế nhất.
-
+st.divider()
 st.subheader("Xây dựng mô hình phân cụm")
 st.markdown('Đây là mô hình phân cụm sử dụng **thuật toán K-Means**')
 from sklearn.cluster import KMeans
@@ -160,9 +162,10 @@ st.pyplot(fig)
 
 st.markdown('Đây là đồ thị thể hiện số **sự kiện đơn lẻ** xảy ra trong thực tế')
 fig, ax = plt.subplots(figsize=(8,4))
-events_prepared.sum().sort_values(ascending=False).plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
+ax1 = events_prepared.sum().sort_values(ascending=False).plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
+ax1.set_title("Single weather events in dataset", fontsize=18)
 st.pyplot(fig)
-
+st.divider()
 st.subheader("Đánh giá và lựa chọn thuật toán")
 st.markdown('Sau khi cân nhắc và so sánh kết quả phân cụm của 4 thuật toán, có thể thấy, thuật toán **Agglomerative Clustering** đem lại kết quả phân cụm gần với thực tế nhất.')
 fig, ax = plt.subplots(1, 2, figsize=(15, 5))
@@ -172,26 +175,24 @@ st.pyplot(fig)
 
 # Thực hiện gán tên cụm vào tên sự kiện thời tiết tương ứng. 
 # Sau đó, sử dụng lý thuyết phân cụm của thuật toán Agglomerative để xem rằng liệu 1 ngày có thể có 2 sự kiện thời tiết hay không.
-
+st.divider()
 st.subheader("Ứng dụng và đánh giá kết quả phân cụm")
 st.markdown("Từ kết quả phân cụm ở trên, cùng với các cơ sở lý thuyết phân cụm bằng Agglometive, nhóm tiến hành phân cụm lại các điểm để xem rằng liệu có điểm nào có thể thuộc vào 2 cụm riêng biệt không, nghĩa là cùng một thông số thời tiết thì liệu có thể xảy ra từ 2 sự kiện trở lên không.")
 event_names_ordered = events_prepared.sum().sort_values(ascending=False).index
 clusters_ordered = resultDf.iloc[:,0].value_counts().index
 cluster_category_mapping = {}
 for i in range(clusters_count):
-    cluster_category_mapping.update({clusters_ordered[i]:event_names_ordered[i]})
-cluster_category_mapping
+    # Chuyển đổi numpy.float64 thành float
+    key = float(clusters_ordered[i])
+    value = float(event_names_ordered[i])
+    cluster_category_mapping.update({key: value})
 
 #tọa độ tâm từng cụm
-cluster_centers_mapping = {}
-for key in cluster_category_mapping:
-    cluster_indices = resultDf.loc[resultDf[0] == key].index
-    cluster_data = X_train.iloc[cluster_indices]
-    mean = cluster_data.mean(axis=0).values
-    #print("\n" + cluster_category_mapping[key])
-    #print(mean)
-    cluster_centers_mapping.update({key:mean})
-cluster_centers_mapping
+cluster_centers_mapping_float = {}
+for key in cluster_centers_mapping:
+    # Chuyển đổi numpy.float64 thành float
+    key_float = float(key)
+    cluster_centers_mapping_float.update({key_float: cluster_centers_mapping[key]})
 
 #tính khoảng cách từ 1 điểm đến tâm từng cụm
 def get_distances_from_cluster(data_frame):
@@ -231,7 +232,8 @@ y_train_col_ordered.sum().plot.bar(ax=ax[0], title="Real events that happened", 
 ax = X_train_col_ordered.sum().plot.bar(ax=ax[1], title="Predicted events", color = plt.cm.Set2(range(len(events.Events.unique()))))
 #resultDf.iloc[:,0].value_counts().plot.bar(ax=ax[1], title="Histogram obtained from agglomerative clustering")
 st.pyplot(fig)
-st.write(check_accuracy(X_train_col_ordered, y_train_col_ordered))
+a = check_accuracy(X_train_col_ordered, y_train_col_ordered)
+st.write(f'Chỉ số Accuracy của mô hình là {a}')
 
 distancesDf = get_distances_from_cluster(X_test)
 classification_result = classify_events(distancesDf)
@@ -242,5 +244,6 @@ fig, ax = plt.subplots(1, 2, figsize=(15, 5))
 y_test_col_ordered.sum().plot.bar(ax=ax[0], title="Real events that happened", color = plt.cm.Set2(range(len(events.Events.unique()))))
 X_test_col_ordered.sum().plot.bar(ax=ax[1], title="Predicted events", color = plt.cm.Set2(range(len(events.Events.unique()))))
 st.pyplot(fig)
-st.write(check_accuracy(X_test_col_ordered, y_test_col_ordered))
+a = check_accuracy(X_test_col_ordered, y_test_col_ordered)
+st.write(f'Chỉ số Accuracy của mô hình là {a}')
 
