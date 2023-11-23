@@ -184,7 +184,7 @@ clusters_ordered = resultDf.iloc[:,0].value_counts().index
 cluster_category_mapping = {}
 for i in range(clusters_count):
     # Chuyển đổi numpy.float64 thành float
-    key = float(clusters_ordered[i])
+    key = int(clusters_ordered[i])
     value = str(event_names_ordered[i])
     cluster_category_mapping.update({key: value})
 
