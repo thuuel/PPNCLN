@@ -188,11 +188,11 @@ for i in range(clusters_count):
     cluster_category_mapping.update({key: value})
 
 #tọa độ tâm từng cụm
-cluster_centers_mapping_float = {}
-for key in cluster_centers_mapping:
+cluster_centers_mapping = {}
+for key in cluster_category_mapping:
     # Chuyển đổi numpy.float64 thành float
     key_float = float(key)
-    cluster_centers_mapping_float.update({key_float: cluster_centers_mapping[key]})
+    cluster_centers_mapping.update({key_float: cluster_centers_mapping[key]})
 
 #tính khoảng cách từ 1 điểm đến tâm từng cụm
 def get_distances_from_cluster(data_frame):
