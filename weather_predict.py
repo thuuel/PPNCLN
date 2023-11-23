@@ -180,14 +180,14 @@ st.subheader("Ứng dụng và đánh giá kết quả phân cụm")
 st.markdown("Từ kết quả phân cụm ở trên, cùng với các cơ sở lý thuyết phân cụm bằng Agglometive, nhóm tiến hành phân cụm lại các điểm để xem rằng liệu có điểm nào có thể thuộc vào 2 cụm riêng biệt không, nghĩa là cùng một thông số thời tiết thì liệu có thể xảy ra từ 2 sự kiện trở lên không.")
 event_names_ordered = events_prepared.sum().sort_values(ascending=False).index
 clusters_ordered = resultDf.iloc[:,0].value_counts().index
-cluster_category_mapping = {}
 
-#tọa độ tâm từng cụm
-cluster_centers_mapping = {}
-for key in cluster_category_mapping:
+cluster_category_mapping = {}
+for i in range(clusters_count):
     # Chuyển đổi numpy.float64 thành float
-    key_float = float(key)
-    cluster_centers_mapping.update({key_float: cluster_centers_mapping[key]})
+    key = float(clusters_ordered[i])
+    value = float(event_names_ordered[i])
+    cluster_category_mapping.update({key: value})
+
     
 cluster_centers_mapping = {}
 for key in cluster_category_mapping:
@@ -206,8 +206,6 @@ def get_distances_from_cluster(data_frame):
             cluster_distance[i,key] = dist
             #print(dist)
     column_names = [cluster_category_mapping[k] for k in cluster_category_mapping]
-    #column_names
-
     return pd.DataFrame(cluster_distance, index=data_frame.index, columns=column_names)
 
 distancesDf = get_distances_from_cluster(X_train)
