@@ -250,6 +250,7 @@ with st.sidebar:
     visibility_text = st.number_input("Tầm nhìn trung bình (m)")
     windspeed_text = st.number_input("Tốc độ gió trung bình (m/h)")
     precipi_text = st.number_input("Tổng lượng mưa (inch)")
+    t = 0
     data_input = {
     'TempAvgF': [temp_text],
     'DewPointAvgF': [dewpoint_text],
@@ -257,7 +258,8 @@ with st.sidebar:
     'SeaLevelPressureAvgInches': [slp_text],
     'VisibilityAvgMiles': [visibility_text],
     'WindAvgMPH': [windspeed_text],
-    'PrecipitationSumInches': [precipi_text]}
+    'PrecipitationSumInches': [precipi_text]
+    'PrecipitationTrace': [t]}
     input_df = pd.DataFrame(data_input)
 
     button = st.button('Predict')
