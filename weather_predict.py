@@ -258,7 +258,7 @@ with st.sidebar:
     'SeaLevelPressureAvgInches': [slp_text],
     'VisibilityAvgMiles': [visibility_text],
     'WindAvgMPH': [windspeed_text],
-    'PrecipitationSumInches': [precipi_text]
+    'PrecipitationSumInches': [precipi_text],
     'PrecipitationTrace': [t]}
     input_df = pd.DataFrame(data_input)
 
