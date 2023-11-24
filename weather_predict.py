@@ -227,7 +227,7 @@ ax = X_train_col_ordered.sum().plot.bar(ax=ax[1], title="Predicted events", colo
 #resultDf.iloc[:,0].value_counts().plot.bar(ax=ax[1], title="Histogram obtained from agglomerative clustering")
 st.pyplot(fig)
 a = check_accuracy(X_train_col_ordered, y_train_col_ordered)
-st.write(f'Chỉ số Accuracy của mô hình là {a}')
+st.write(f'Chỉ số Accuracy của mô hình ở tập huấn luyện là {a}')
 
 distancesDf = get_distances_from_cluster(X_test)
 classification_result = classify_events(distancesDf)
@@ -239,7 +239,7 @@ y_test_col_ordered.sum().plot.bar(ax=ax[0], title="Real events that happened", c
 X_test_col_ordered.sum().plot.bar(ax=ax[1], title="Predicted events", color = plt.cm.Set2(range(len(events.Events.unique()))))
 st.pyplot(fig)
 a = check_accuracy(X_test_col_ordered, y_test_col_ordered)
-st.write(f'Chỉ số Accuracy của mô hình là {a}')
+st.write(f'Chỉ số Accuracy của mô hình ở tập kiểm thử là {a}')
 
 with st.sidebar:
     st.subheader("Vui lòng nhập các thông số dưới đây!")
@@ -261,11 +261,11 @@ with st.sidebar:
     'PrecipitationSumInches': [precipi_text],
     'PrecipitationTrace': [t]}
     input_df = pd.DataFrame(data_input)
-
+    input_df = pd.DataFrame(min_max_scaler.fit_transform(data_input), columns=data_input.columns, index=data_input.index)
     button = st.button('Predict')
     if button:
         distancedf_input = get_distances_from_cluster(input_df)
         result_events = classify_events(distancedf_input)
         true_columns = result_events.apply(lambda row: row.index[row].tolist(), axis=1)
-        st.write(f"Với nhhững thông số trên, hôm ấy trời có {true_columns}")
+        st.write(f"Với những thông số trên, chúng tôi dự đoán rằng hôm ấy trời có {true_columns}")
 
