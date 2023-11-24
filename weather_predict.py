@@ -227,7 +227,7 @@ ax = X_train_col_ordered.sum().plot.bar(ax=ax[1], title="Predicted events", colo
 #resultDf.iloc[:,0].value_counts().plot.bar(ax=ax[1], title="Histogram obtained from agglomerative clustering")
 st.pyplot(fig)
 a = check_accuracy(X_train_col_ordered, y_train_col_ordered)
-st.write(f'Chỉ số Accuracy của mô hình ở tập huấn luyện là {a}')
+st.write(f'Chỉ số Accuracy của mô hình ở tập X_train là {a}')
 
 distancesDf = get_distances_from_cluster(X_test)
 classification_result = classify_events(distancesDf)
@@ -239,7 +239,7 @@ y_test_col_ordered.sum().plot.bar(ax=ax[0], title="Real events that happened", c
 X_test_col_ordered.sum().plot.bar(ax=ax[1], title="Predicted events", color = plt.cm.Set2(range(len(events.Events.unique()))))
 st.pyplot(fig)
 a = check_accuracy(X_test_col_ordered, y_test_col_ordered)
-st.write(f'Chỉ số Accuracy của mô hình ở tập kiểm thử là {a}')
+st.write(f'Chỉ số Accuracy của mô hình ở tập X_test là {a}')
 
 with st.sidebar:
     st.subheader("Vui lòng nhập các thông số dưới đây!")
