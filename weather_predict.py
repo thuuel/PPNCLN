@@ -259,7 +259,9 @@ with st.sidebar:
     'WindAvgMPH': [windspeed_text],
     'PrecipitationSumInches': [precipi_text]}
     input_df = pd.DataFrame(data_input)
-    if st.button('Predict'):
+
+    button = st.button('Predict')
+    if button:
         distancedf_input = get_distances_from_cluster(input_df)
         result_events = classify_events(distancedf_input)
         true_columns = result_events.apply(lambda row: row.index[row].tolist(), axis=1)
