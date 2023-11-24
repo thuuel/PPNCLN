@@ -261,7 +261,8 @@ with st.sidebar:
     'PrecipitationSumInches': [precipi_text],
     'PrecipitationTrace': [t]}
     input_df = pd.DataFrame(data_input)
-    input_df = pd.DataFrame(min_max_scaler.fit_transform(data_input), columns=data_input.columns, index=data_input.index)
+    input_df = pd.DataFrame(min_max_scaler.fit_transform(input_df), columns=input_df.columns, index=input_df.index)
+    
     button = st.button('Predict')
     if button:
         distancedf_input = get_distances_from_cluster(input_df)
