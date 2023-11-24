@@ -246,9 +246,9 @@ with st.sidebar:
     temp_text = st.number_input("Nhiệt độ trung bình (độ F)") 
     dewpoint_text = st.number_input("Nhiệt độ điểm sương trung bình (độ F)") 
     humidty_text = st.number_input("Độ ẩm trung bình (%)")
-    slp_text = st.number_input("Áp suất trung bình ở mực nước biển (inch)")
+    slp_text = st.number_input("Áp suất trung bình ở mực nước biển (inHg)")
     visibility_text = st.number_input("Tầm nhìn trung bình (m)")
-    windspeed_text = st.number_input("Tốc độ gió trung bình (m/h)")
+    windspeed_text = st.number_input("Tốc độ gió trung bình (miles/h)")
     precipi_text = st.number_input("Tổng lượng mưa (inch)")
     t = 0
     data_input = {
