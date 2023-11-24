@@ -270,11 +270,4 @@ with st.sidebar:
         true_columns = result_events.apply(lambda row: row.index[row].tolist(), axis=1)
         st.write(f"Với những thông số trên, chúng tôi dự đoán rằng hôm ấy trời có {true_columns.tolist()}")
         
-        temp_text = st.number_input("Nhiệt độ trung bình (độ F)", value=0) 
-        dewpoint_text = st.number_input("Nhiệt độ điểm sương trung bình (độ F)", value=0) 
-        humidty_text = st.number_input("Độ ẩm trung bình (%)", value=0)
-        slp_text = st.number_input("Áp suất trung bình ở mực nước biển (inch)", value=0)
-        visibility_text = st.number_input("Tầm nhìn trung bình (m)", value=0)
-        windspeed_text = st.number_input("Tốc độ gió trung bình (m/h)", value=0)
-        precipi_text = st.number_input("Tổng lượng mưa (inch)", value=0)
-
+       
