@@ -243,13 +243,13 @@ st.write(f'Chỉ số Accuracy của mô hình là {a}')
 
 with st.sidebar:
     st.subheader("Vui lòng nhập các thông số dưới đây!")
-    temp_text = st.text_input("Nhiệt độ trung bình (độ F)") 
-    dewpoint_text = st.text_input("Nhiệt độ điểm sương trung bình (độ F)") 
-    humidty_text = st.text_input("Độ ẩm trung bình (%)")
-    slp_text = st.text_input("Áp suất trung bình ở mực nước biển (inch)")
-    visibility_text = st.text_input("Tầm nhìn trung bình (m)")
-    windspeed_text = st.text_input("Tốc độ gió trung bình (m/h)")
-    precipi_text = st.text_input("Tổng lượng mưa (inch)")
+    temp_text = st.number_input("Nhiệt độ trung bình (độ F)") 
+    dewpoint_text = st.number_input("Nhiệt độ điểm sương trung bình (độ F)") 
+    humidty_text = st.number_input("Độ ẩm trung bình (%)")
+    slp_text = st.number_input("Áp suất trung bình ở mực nước biển (inch)")
+    visibility_text = st.number_input("Tầm nhìn trung bình (m)")
+    windspeed_text = st.number_input("Tốc độ gió trung bình (m/h)")
+    precipi_text = st.number_input("Tổng lượng mưa (inch)")
     data_input = {
     'TempAvgF': [temp_text],
     'DewPointAvgF': [dewpoint_text],
