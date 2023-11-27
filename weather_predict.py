@@ -247,7 +247,7 @@ st.write(f'Chỉ số Accuracy của mô hình ở tập X_test là {a}')
 
 
 with st.sidebar:
-    st.subheader("Vui lòng nhập các thông số dưới đây!")
+    st.subheader("Vui lòng nhập các thông số (có giá trị hợp lí) dưới đây!")
     temp_text = st.number_input("Nhiệt độ trung bình (độ F)") 
     dewpoint_text = st.number_input("Nhiệt độ điểm sương trung bình (độ F)") 
     humidty_text = st.number_input("Độ ẩm trung bình (%)")
@@ -267,16 +267,14 @@ with st.sidebar:
     'PrecipitationTrace': [t]}
     input_df = pd.DataFrame(data_input)
     # st.dataframe(data=input_df, width=None, height=None)
-
     input_df = pd.DataFrame(min_max_scaler.transform(input_df), columns=input_df.columns, index=input_df.index)
     # st.dataframe(data=input_df, width=None, height=None)
     button = st.button('Predict')
     if button:
         distancedf_input = get_distances_from_cluster(input_df)
-        st.dataframe(data=distancedf_input, width=None, height=None)
         result_events = classify_events(distancedf_input)
-        st.dataframe(data=result_events, width=None, height=None)
         true_columns = result_events.apply(lambda row: row.index[row].tolist(), axis=1)
         st.write(f"Với thông số trên, chúng tôi dự đoán rằng hôm ấy trời có {true_columns.tolist()}")
+        
         
        
