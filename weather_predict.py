@@ -230,7 +230,7 @@ ax1.set_title("Single weather events in dataset", fontsize=18)
 st.pyplot(fig)
 st.divider()
 st.subheader("Đánh giá và lựa chọn thuật toán")
-st.markdown('Bảng so sánh chỉ số **Accuracy** của 4 thuật toán')
+st.markdown('Bảng so sánh chỉ số **Accuracy** của 4 thuật toán:')
 
 accuracy_df = {'K-means': a, 'Spectral': b, 'DBSCAN': c, 'Agglomerative': d}
 accuracy_df = pd.DataFrame(accuracy_df, index = ['Accuracy'])
