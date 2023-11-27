@@ -223,12 +223,6 @@ result_agglo.sort_index()
 result_agglo = result_agglo.reindex(sorted(result_agglo.columns), axis=1)
 d = check_accuracy(result_agglo.sort_index(), y_train_col_ordered.sort_index())
 
-accuracy_df = {'K-means': a, 'Spectral': b, 'DBSCAN': c, 'Agglomerative': d}
-accuracy_df = pd.DataFrame(accuracy_df, index = ['Accuracy'])
-st.dataframe(data=accuracy_df, width=None, height=None)
-
-
-
 st.markdown('Đây là đồ thị thể hiện số **sự kiện đơn lẻ** xảy ra trong thực tế')
 fig, ax = plt.subplots(figsize=(8,4))
 ax1 = events_prepared.sum().sort_values(ascending=False).plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
@@ -236,7 +230,13 @@ ax1.set_title("Single weather events in dataset", fontsize=18)
 st.pyplot(fig)
 st.divider()
 st.subheader("Đánh giá và lựa chọn thuật toán")
-st.markdown('Sau khi cân nhắc và so sánh kết quả phân cụm của 4 thuật toán, có thể thấy, thuật toán **Agglomerative Clustering** đem lại kết quả phân cụm gần với thực tế nhất.')
+st.markdown('Bảng so sánh chỉ số **Accuracy** của 4 thuật toán')
+
+accuracy_df = {'K-means': a, 'Spectral': b, 'DBSCAN': c, 'Agglomerative': d}
+accuracy_df = pd.DataFrame(accuracy_df, index = ['Accuracy'])
+st.dataframe(data=accuracy_df, width=None, height=None)
+
+st.markdown('Sau khi so sánh kết quả phân cụm của 4 thuật toán, có thể thấy, thuật toán **Agglomerative Clustering** đem lại kết quả phân cụm gần với thực tế nhất.')
 fig, ax = plt.subplots(1, 2, figsize=(15, 5))
 events_prepared.sum().sort_values(ascending=False).plot.bar(ax=ax[0], title="Real events that happened", color = plt.cm.Set2(range(len(events.Events.unique()))))
 resultDf.iloc[:,0].value_counts().plot.bar(ax=ax[1], title="Bar obtained from agglomerative clustering", color = plt.cm.Set2(range(len(events.Events.unique()))))
