@@ -240,6 +240,9 @@ X_test_col_ordered.sum().plot.bar(ax=ax[1], title="Predicted events", color = pl
 st.pyplot(fig)
 a = check_accuracy(X_test_col_ordered, y_test_col_ordered)
 st.write(f'Chỉ số Accuracy của mô hình ở tập X_test là {a}')
+import joblib
+joblib.dump(min_max_scaler, 'min_max_scaler.joblib')
+min_max_scaler = joblib.load('min_max_scaler.joblib')
 
 with st.sidebar:
     st.subheader("Vui lòng nhập các thông số dưới đây!")
@@ -262,8 +265,6 @@ with st.sidebar:
     'PrecipitationTrace': [t]}
     input_df = pd.DataFrame(data_input)
     st.dataframe(data=input_df, width=None, height=None)
-    data_values = input_df.values #returns a numpy array
-    min_max_scaler = preprocessing.MinMaxScaler()
 
     input_df = pd.DataFrame(min_max_scaler.fit_transform(input_df), columns=input_df.columns, index=input_df.index)
     st.dataframe(data=input_df, width=None, height=None)
