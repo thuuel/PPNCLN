@@ -266,10 +266,10 @@ with st.sidebar:
     'PrecipitationSumInches': [precipi_text],
     'PrecipitationTrace': [t]}
     input_df = pd.DataFrame(data_input)
-    st.dataframe(data=input_df, width=None, height=None)
+    # st.dataframe(data=input_df, width=None, height=None)
 
     input_df = pd.DataFrame(min_max_scaler.transform(input_df), columns=input_df.columns, index=input_df.index)
-    st.dataframe(data=input_df, width=None, height=None)
+    # st.dataframe(data=input_df, width=None, height=None)
     button = st.button('Predict')
     if button:
         distancedf_input = get_distances_from_cluster(input_df)
@@ -277,6 +277,6 @@ with st.sidebar:
         result_events = classify_events(distancedf_input)
         st.dataframe(data=result_events, width=None, height=None)
         true_columns = result_events.apply(lambda row: row.index[row].tolist(), axis=1)
-        st.write(f"{temp_text}, {dewpoint_text}, {humidty_text} chúng tôi dự đoán rằng hôm ấy trời có {true_columns.tolist()}")
+        st.write(f"Với thông số trên, chúng tôi dự đoán rằng hôm ấy trời có {true_columns.tolist()}")
         
        
