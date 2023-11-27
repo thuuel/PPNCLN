@@ -35,10 +35,14 @@ for value in events.Events.value_counts().index:
     unique_events.update(splitted)
 
 # Gán giá trị True cho các sự kiện thời tiết xảy ra tương ứng với từng hàng, ngược lại thì False
-single_events = pd.DataFrame()
-for event_type in unique_events:
-    event_occurred = events.Events.str.contains(event_type)
-    single_events = pd.concat([single_events, pd.DataFrame(data={event_type: event_occurred.values})], join='outer', axis=1)
+def create_event_occurrence_df(events, unique_events):
+    single_events = pd.DataFrame()
+    for event_type in unique_events:
+        event_occurred = events.str.contains(event_type)
+        single_events = pd.concat([single_events, pd.DataFrame(data={event_type: event_occurred.values})], join='outer', axis=1)
+    return single_events
+
+single_events = create_event_occurrence_df(events.Events, unique_events)
 
 # Vẽ đồ thị thể hiện số lượng của từng sự kiện thời tiết riêng lẻ trong bộ dữ liệu
 fig, ax = plt.subplots(figsize=(8,4))
@@ -117,6 +121,24 @@ y_train, y_test = train_test_split(events_prepared, test_size=0.2, random_state=
 
 clusters_count = len(unique_events)
 
+#hàm gán tên từng sự kiện với tên các cụm tương ứng
+def create_cluster_mapping(events_prepared, resultDf):
+    event_names_ordered = events_prepared.sum().sort_values(ascending=False).index
+    clusters_ordered = resultDf.iloc[:,0].value_counts().index
+    cluster_category_mapping = {}
+    clusters_count = len(clusters_ordered)
+    for i in range(clusters_count):
+        cluster_category_mapping.update({clusters_ordered[i]:event_names_ordered[i]})
+    return cluster_category_mapping
+
+#xem giá trị  dự đoán có đúng vs gtri thực tế
+def check_accuracy(X, y):    
+    comparison = X == y
+    val_counts = comparison.all(axis=1).value_counts()
+    percentageCorrect = val_counts.at[True] / X.shape[0] * 100
+    return percentageCorrect
+y_train_col_ordered = y_train.reindex(sorted(y_train.columns), axis=1)
+
 # Sử dụng những thuật toán phân cụm và so sánh với kết quả thực tế. Từ đó, đưa ra thuật toán cho kết quả gần với thực tế nhất.
 st.divider()
 st.subheader("Xây dựng mô hình phân cụm")
@@ -125,29 +147,60 @@ from sklearn.cluster import KMeans
 warnings.filterwarnings("ignore")
 kmeans = KMeans(n_clusters=clusters_count).fit(X_train)
 resultDf1 = pd.DataFrame(kmeans.labels_)
+resultDf1.index = X_train.index
 fig, ax = plt.subplots(figsize=(8,4))
 ax1 = resultDf1.iloc[:,0].value_counts().plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
 ax1.set_title("K-Means clustering", fontsize=16)
 st.pyplot(fig)
+
+resultDf1.replace(create_cluster_mapping(y_train, resultDf1), inplace=True)
+result_kmean = create_event_occurrence_df(resultDf1[0], unique_events)
+result_kmean.index = resultDf1.index
+result_kmean.reindex(sorted(result_kmean.columns), axis=1)
+result_kmean.sort_index()
+
+result_kmean = result_kmean.reindex(sorted(result_kmean.columns), axis=1)
+a = check_accuracy(result_kmean.sort_index(), y_train_col_ordered.sort_index())
 
 st.markdown('Đây là mô hình phân cụm sử dụng **thuật toán Spectral Clustering**')
 from sklearn.cluster import SpectralClustering
 warnings.filterwarnings("ignore")
 sc = SpectralClustering(n_clusters=clusters_count).fit(X_train)
 resultDf2 = pd.DataFrame(sc.labels_)
+resultDf2.index = X_train.index
 fig, ax = plt.subplots(figsize=(8,4))
 ax1 = resultDf2.iloc[:,0].value_counts().plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
 ax1.set_title("Spectral Clustering", fontsize=16)
 st.pyplot(fig)
 
+
+resultDf2.replace(create_cluster_mapping(y_train, resultDf2), inplace=True)
+result_spectral = create_event_occurrence_df(resultDf2[0], unique_events)
+result_spectral.index = resultDf2.index
+result_spectral.reindex(sorted(result_spectral.columns), axis=1)
+result_spectral.sort_index()
+
+result_spectral = result_spectral.reindex(sorted(result_spectral.columns), axis=1)
+b = check_accuracy(result_spectral.sort_index(), y_train_col_ordered.sort_index())
+
 st.markdown('Đây là mô hình phân cụm sử dụng **thuật toán DBSCAN**')
 from sklearn.cluster import DBSCAN
 dbscan = DBSCAN(eps=0.25, min_samples=4).fit(X_train)
 resultDf3 = pd.DataFrame(dbscan.labels_)
+resultDf3.index = X_train.index
 fig, ax = plt.subplots(figsize=(8,4))
 ax1 = resultDf3.iloc[:,0].value_counts().plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
 ax1.set_title("DBSCAN", fontsize=16)
 st.pyplot(fig)
+
+resultDf3.replace(create_cluster_mapping(y_train, resultDf3), inplace=True)
+result_dbscan = create_event_occurrence_df(resultDf3[0], unique_events)
+result_dbscan.index = resultDf3.index
+result_dbscan.reindex(sorted(result_dbscan.columns), axis=1)
+result_dbscan.sort_index()
+
+result_dbscan = result_dbscan.reindex(sorted(result_dbscan.columns), axis=1)
+c = check_accuracy(result_dbscan.sort_index(), y_train_col_ordered.sort_index())
 
 st.markdown('Đây là mô hình phân cụm sử dụng **thuật toán Agglomerative Clustering**')
 from sklearn.cluster import AgglomerativeClustering
@@ -157,6 +210,24 @@ fig, ax = plt.subplots(figsize=(8,4))
 ax1 = resultDf.iloc[:,0].value_counts().plot.bar(color = plt.cm.Set2(range(len(events.Events.unique()))), ax=ax)
 ax1.set_title("Agglomerative Clustering", fontsize=16)
 st.pyplot(fig)
+
+resultDf4 = resultDf.copy()
+resultDf4.index = X_train.index
+
+resultDf4.replace(create_cluster_mapping(y_train, resultDf4), inplace=True)
+result_agglo = create_event_occurrence_df(resultDf4[0], unique_events)
+result_agglo.index = resultDf4.index
+result_agglo.reindex(sorted(result_agglo.columns), axis=1)
+result_agglo.sort_index()
+
+result_agglo = result_agglo.reindex(sorted(result_agglo.columns), axis=1)
+d = check_accuracy(result_agglo.sort_index(), y_train_col_ordered.sort_index())
+
+accuracy_df = {'K-means': a, 'Spectral': b, 'DBSCAN': c, 'Agglomerative': d}
+accuracy_df = pd.DataFrame(accuracy_df, index = ['Accuracy'])
+st.dataframe(data=accuracy_df, width=None, height=None)
+
+
 
 st.markdown('Đây là đồ thị thể hiện số **sự kiện đơn lẻ** xảy ra trong thực tế')
 fig, ax = plt.subplots(figsize=(8,4))
@@ -179,14 +250,8 @@ st.markdown("Từ kết quả phân cụm ở trên, cùng với các cơ sở l
 event_names_ordered = events_prepared.sum().sort_values(ascending=False).index
 clusters_ordered = resultDf.iloc[:,0].value_counts().index
 
-cluster_category_mapping = {}
-for i in range(clusters_count):
-    # Chuyển đổi numpy.float64 thành float
-    key = int(clusters_ordered[i])
-    value = str(event_names_ordered[i])
-    cluster_category_mapping.update({key: value})
+cluster_category_mapping = create_cluster_mapping(y_test, resultDf)
 
-    
 cluster_centers_mapping = {}
 for key in cluster_category_mapping:
     cluster_indices = resultDf.loc[resultDf[0] == key].index
@@ -216,12 +281,6 @@ X_train_col_ordered = classification_result.reindex(sorted(classification_result
 y_train_col_ordered = y_train.reindex(sorted(y_train.columns), axis=1)
 
 #xem giá trị  dự đoán có đúng vs gtri thực tế
-def check_accuracy(X, y):    
-    comparison = X == y
-    val_counts = comparison.all(axis=1).value_counts()
-    percentageCorrect = val_counts.at[True] / X.shape[0] * 100
-    return percentageCorrect
-
 
 # Đánh giá mô hình phân cụm dựa trên tỷ lệ giữa số dòng dự báo đúng và tổng số dòng của 2 tập X_train và X_test
 
