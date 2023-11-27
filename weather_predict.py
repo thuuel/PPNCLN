@@ -266,7 +266,9 @@ with st.sidebar:
     button = st.button('Predict')
     if button:
         distancedf_input = get_distances_from_cluster(input_df)
+        st.dataframe(data=distancedf_input, width=None, height=None)
         result_events = classify_events(distancedf_input)
+        st.dataframe(data=result_events, width=None, height=None)
         true_columns = result_events.apply(lambda row: row.index[row].tolist(), axis=1)
         st.write(f"{temp_text}, {dewpoint_text}, {humidty_text} chúng tôi dự đoán rằng hôm ấy trời có {true_columns.tolist()}")
         
