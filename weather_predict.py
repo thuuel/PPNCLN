@@ -262,6 +262,9 @@ with st.sidebar:
     'PrecipitationTrace': [t]}
     input_df = pd.DataFrame(data_input)
     st.dataframe(data=input_df, width=None, height=None)
+    data_values = input_df.values #returns a numpy array
+    min_max_scaler = preprocessing.MinMaxScaler()
+
     input_df = pd.DataFrame(min_max_scaler.fit_transform(input_df), columns=input_df.columns, index=input_df.index)
     st.dataframe(data=input_df, width=None, height=None)
     button = st.button('Predict')
