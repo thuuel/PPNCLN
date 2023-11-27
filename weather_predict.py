@@ -268,6 +268,6 @@ with st.sidebar:
         distancedf_input = get_distances_from_cluster(input_df)
         result_events = classify_events(distancedf_input)
         true_columns = result_events.apply(lambda row: row.index[row].tolist(), axis=1)
-        st.write(f"Với những thông số trên, chúng tôi dự đoán rằng hôm ấy trời có {true_columns.tolist()}")
+        st.write(f"{temp_text}, {dewpoint_text} chúng tôi dự đoán rằng hôm ấy trời có {true_columns.tolist()}")
         
        
