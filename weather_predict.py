@@ -99,6 +99,10 @@ data_values = data_prepared.values #returns a numpy array
 min_max_scaler = preprocessing.MinMaxScaler()
 data_prepared = pd.DataFrame(min_max_scaler.fit_transform(data_prepared), columns=data_prepared.columns, index=data_prepared.index)
 
+import joblib
+joblib.dump(min_max_scaler, 'min_max_scaler.joblib')
+min_max_scaler = joblib.load('min_max_scaler.joblib')
+
 st.divider()
 st.subheader("Data Preparation")
 st.markdown('Sau khi được làm sạch, xử lý và chuẩn hóa, đây là bộ dữ liệu cuối cùng nhóm dùng để huấn luyện và kiểm thử')
@@ -240,9 +244,7 @@ X_test_col_ordered.sum().plot.bar(ax=ax[1], title="Predicted events", color = pl
 st.pyplot(fig)
 a = check_accuracy(X_test_col_ordered, y_test_col_ordered)
 st.write(f'Chỉ số Accuracy của mô hình ở tập X_test là {a}')
-import joblib
-joblib.dump(min_max_scaler, 'min_max_scaler.joblib')
-min_max_scaler = joblib.load('min_max_scaler.joblib')
+
 
 with st.sidebar:
     st.subheader("Vui lòng nhập các thông số dưới đây!")
@@ -266,7 +268,7 @@ with st.sidebar:
     input_df = pd.DataFrame(data_input)
     st.dataframe(data=input_df, width=None, height=None)
 
-    input_df = pd.DataFrame(min_max_scaler.fit_transform(input_df), columns=input_df.columns, index=input_df.index)
+    input_df = pd.DataFrame(min_max_scaler.transform(input_df), columns=input_df.columns, index=input_df.index)
     st.dataframe(data=input_df, width=None, height=None)
     button = st.button('Predict')
     if button:
